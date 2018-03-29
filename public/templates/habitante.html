@@ -1,0 +1,148 @@
+<form>
+	<input type="text" ng-model="search">
+</form>
+<table class="table table-responsive table-stripped">
+    <thead>
+        <tr>
+            <td>Cédula</td>
+            <td>Nombres</td>
+            <td>Apellidos</td>
+            <td>Casa</td>
+            <td>Calle</td>
+            <td>Vereda</td>
+            <td>Sector</td>
+            <td>Fecha de nacimiento</td>
+            <td>Teléfono celular</td>
+            <td>Teléfono habitación</td>
+            <td>Cargo</td>
+        </tr>
+    </thead>
+    <tbody>
+    	<tr ng-show="habitantes.length==0 || habitantes == null" class="text-center ">
+    		<td colspan="11">No existen habitantes registrados</td>
+    	</tr>
+        <tr ng-show="habitantes.length!=0" ng-repeat="x in habitantes | filter:search">
+            <td ng-click="seleccionar(x)">[[x.nacionalidad]]-[[x.cedula]]</td>
+            <td>[[x.nombre]]</td>
+            <td>[[x.apellido]]</td>
+            <td>[[x.casa]]</td>
+            <td>[[x.calle]]</td>
+            <td>[[x.vereda]]</td>
+            <td>[[x.sector]]</td>
+            <td>[[x.fecha_de_nacimiento]]</td>
+            <td>[[x.telefono_celular]]</td>
+            <td>[[x.telefono_habitacion]]</td>
+            <td>[[x.cargo]]</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Cédula</td>
+            <td>Nombres</td>
+            <td>Apellidos</td>
+            <td>Casa</td>
+            <td>Calle</td>
+            <td>Vereda</td>
+            <td>Sector</td>
+            <td>Fecha de nacimiento</td>
+            <td>Teléfono celular</td>
+            <td>Teléfono habitación</td>
+            <td>Cargo</td>
+        </tr>
+    </tfoot>
+</table>
+
+<button type="button" ng-click="habitante = {}; accion = 'agregar'" class="btn btn-success">Agregar nuevo</button>
+
+[[habitante]]
+<div ng-show="habitante == null">
+	No se ha seleccionado ningun habitante
+</div>
+<div ng-show="habitante != null">
+	<form ng-submit="editar()">
+		[[mensaje]]
+		<table>
+			<tr>
+				<th>
+					<td>Nacionalidad: </td>
+					<td><input type="text" ng-model="habitante.nacionalidad" ng-model="habitante.nacionalidad"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Cedula: </td>
+					<td><input type="text" ng-model="habitante.cedula" ng-model="habitante.cedula" maxlength="10"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Nombres: </td>
+					<td><input type="text" ng-model="habitante.nombre" ng-model="habitante.nombre"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Apellido: </td>
+					<td><input type="text" ng-model="habitante.apellido" ng-model="habitante.apellido"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Casa: </td>
+					<td><input type="text" ng-model="habitante.casa" ng-model="habitante.casa"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Calle: </td>
+					<td><input type="text" ng-model="habitante.calle" ng-model="habitante.calle"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Vereda: </td>
+					<td><input type="text" ng-model="habitante.vereda" ng-model="habitante.vereda"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Sector: </td>
+					<td><input type="text" ng-model="habitante.sector" ng-model="habitante.sector"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Fecha de Nacimiento: </td>
+					<td><input type="text" ng-model="habitante.fecha_de_nacimiento" ng-model="habitante.fecha_de_nacimiento"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Telefono Celular: </td>
+					<td><input type="text" ng-model="habitante.telefono_celular" ng-model="habitante.telefono_celular"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Telefono Habitacion: </td>
+					<td><input type="text" ng-model="habitante.telefono_habitacion" ng-model="habitante.telefono_habitacion"></td>
+				</th>
+			</tr>
+			<tr>
+				<th>
+					<td>Cargo: </td>
+					<td><input type="text" ng-model="habitante.cargo" ng-model="habitante.cargo"></td>
+				</th>
+			</tr>
+			<tr>
+				<th ng-show="accion == 'editar'">
+					<td><button type="submit" class="btn btn-primary">Editar</button></td>
+					<td><button type="button" ng-click="eliminar()" class="btn btn-danger">Eliminar</button></td>
+				</th>
+				<th ng-show="accion == 'agregar'">
+					<td><button type="button" ng-click="agregar()" class="btn btn-info">Agregar</button></td>
+				</th>
+			</tr>
+		</table>
+	</form>
+</div>

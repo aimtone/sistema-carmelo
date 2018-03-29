@@ -1,0 +1,69 @@
+-------------------------------------------------------------------
+// entidades = cliente, tipousuario
+
+GET http://localhost:8080/adminCliente/public/api/[entidad]
+POST http://localhost:8080/adminCliente/public/api/[entidad]
+PUT http://localhost:8080/adminCliente/public/api/[entidad}/[id]
+DELETE http://localhost:8080/adminCliente/public/api/[entidad}/[id]
+
+headers : {
+	Content-Type : "application/x-www-form-urlencoded",
+	Authorization : "Bearer [token]"
+}
+
+-- La data que recibira seran los mismos datos que retorna
+
+-- Los parametros a pasar por metodo GET
+
+?view=all           | Muestra todos los registros en una sola pagina
+?view=paginate      | Muestra los registros paginados
+?per_page=[integer] | Cantidad de registros a mostrar por pagina
+?filter=[json]      | Filtra los resultados solicitados segun lo que corresponda
+
+Ejemplo JSON para filter
+
+{ 
+	"where": 
+		{ 
+			"nickname" : "marcomastantuono" 
+		}, 
+	"sort" : 
+		{ 
+			"by" : "nickname", 
+			"order" : "asc" 
+		} 
+}
+
+
+
+-------------------------------------------------------------------
+// Para login
+
+POST http://localhost:8080/adminCliente/public/api/login
+
+params : {
+	email : "[email]",
+	password : "[password]"
+}
+-------------------------------------------------------------------
+// Para registro
+
+POST http://localhost:8080/adminCliente/public/api/register
+
+params : {
+	name : "[name]",
+	email : "[email]",
+	password : "[password]",
+	c_password: "[c_password]"
+}
+-------------------------------------------------------------------
+// Para registrar o actualizar un usuario
+
+-- Actualizar todos los usuarios
+
+GET http://localhost:8080/adminCliente/update/browser.php
+
+-- Actualizar o registrar un usuario
+
+GET http://localhost:8080/adminCliente/update/browser.php?nickname=[nickname]
+-------------------------------------------------------------------

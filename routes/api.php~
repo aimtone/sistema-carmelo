@@ -1,0 +1,87 @@
+<?php
+
+use Illuminate\Http\Request;
+ 
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:api')->get('client','ClientController@index');
+Route::middleware('auth:api')->get('client/{id}','ClientController@show');
+Route::post('client','ClientController@store');
+Route::put('client/{id}','ClientController@update');
+Route::middleware('auth:api')->delete('client','ClientController@destroy');
+ 
+
+Route::middleware('auth:api')->get('conversation','ConversationController@index');
+Route::middleware('auth:api')->get('conversation/{id}','ConversationController@show');
+Route::post('conversation','ConversationController@store');
+Route::put('conversation/{id}','ConversationController@update');
+Route::middleware('auth:api')->delete('conversation','ConversationController@destroy');
+
+
+Route::middleware('auth:api')->resource('bot','BotController');
+
+Route::middleware('auth:api')->resource('domain','DomainController');
+
+Route::get('cdn/{websiteId}/{file}','DomainController@verifyUrl');
+Route::get('clienbot/{user_id}/{websiteId}', 'DomainController@loadScript');
+Route::get('metadata','MetadataController@index');
+
+
+Route::middleware('auth:api')->resource('history','HistoryController');
+
+Route::get('plan','PlanController@index');
+Route::middleware('auth:api')->get('plan/{id}','PlanController@show');
+Route::middleware('auth:api')->post('plan','PlanController@store');
+Route::middleware('auth:api')->put('plan/{id}','PlanController@update');
+Route::middleware('auth:api')->delete('plan','PlanController@destroy');
+
+Route::middleware('auth:api')->resource('note','NoteController');
+Route::middleware('auth:api')->get('viewNote','NoteController@viewNote');
+
+Route::middleware('auth:api')->resource('pattern','PatternController');
+Route::middleware('auth:api')->resource('response','ResponseController');
+Route::middleware('auth:api')->resource('autoresponse','ResponseController');
+Route::middleware('auth:api')->resource('operator','OperatorController');
+
+Route::middleware('auth:api')->resource('user','UserController');
+
+Route::get('getUserId','UserController@getId');
+Route::get('findUser','UserController@findUser');
+
+
+Route::middleware('auth:api')->resource('userrole','UserRoleController');
+
+Route::post('/login', 'API\UserController@login');
+Route::post('/register', 'API\UserController@register');
+Route::post('/fbLogin', 'API\UserController@facebookLogin');
+Route::middleware('auth:api')->put('/changePassword', 'API\UserController@changePassword');
+
+Route::middleware('auth:api')->post('/send-mail', 'MailController@sendMail');
+
+Route::post('verify/account/{token}', 'OperatorController@verifyAccount');
+
+
+//     	$message->from($address, $name = null);
+// $message->sender($address, $name = null);
+// $message->to($address, $name = null);
+// $message->cc($address, $name = null);
+// $message->bcc($address, $name = null);
+// $message->replyTo($address, $name = null);
+// $message->subject($subject);
+// $message->priority($level);
+// $message->attach($pathToFile, array $options = []);
+
+// // Attach a file from a raw $data string...
+// $message->attachData($data, $name, array $options = []);
+
+// // Get the underlying SwiftMailer message instance...
+// $message->getSwiftMessage();
