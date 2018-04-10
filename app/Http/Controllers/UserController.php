@@ -11,8 +11,9 @@ class UserController extends Controller
  
     public function index()
     {
-        return User::get();
-    
+        $User['data'] = User::get();
+        $User['foreign'] = array();
+        return $User;
     }
 
     public function findUser(Request $request) {

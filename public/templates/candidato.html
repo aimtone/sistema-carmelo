@@ -1,0 +1,126 @@
+<div class="page-title">
+    <div class="title_left">
+        <h3>Inscripción de Candidatos</h3>
+    </div>
+    <div class="title_right">
+        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="" ng-model="search">
+                <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Buscar</button>
+                    </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="x_panel">
+    <div class="x_title">
+        <h2>Todos los candidatos</h2>
+        <button ng-click="openModal('agregar')" type="button" class="btn btn-default btn-sm pull-right"><i class="fa fa-plus"></i> Agregar nuevo</button>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content table-responsive">
+        <table class="table table-hover ">
+            <thead>
+                <tr>
+                    <th>Cédula</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Eleccion</th>
+                    <th>Fecha</th>
+                    <th>Comite</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-show="datas.length==0 || datas == null" class="text-center ">
+                    <td colspan="11">No existen datos registrados</td>
+                </tr>
+                <tr ng-show="datas.length!=0" ng-repeat="x in datas | filter:search">
+                    <td>[[x.habitante.cedula]]</td>
+                    <td>[[x.habitante.nombre]]</td>
+                    <td>[[x.habitante.apellido]]</td>
+                    <td>[[x.eleccion]]</td>
+                    <td>[[x.periodo]]</td>
+                    <td>[[x.comite]]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Candidato</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Cedula</label>
+                                <div>
+                                    <input type="hidden" ng-model="data.id_habitante" ng-value="data.id_habitante" class="form-control">
+
+                                    <input type="text" ng-enter="buscarHabitantePorCedula()" ng-model="data.cedula" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Nombres</label>
+                                <div>
+                                    <input type="text" ng-value="nombres" disabled class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Apellidos</label>
+                            <div class="form-group">
+                                <div>
+                                    <input type="text" ng-value="apellidos" disabled class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="">Comité</label>
+                            <div class="form-group">
+                                <div>
+                                    <select ng-model="data.id_comite" ng-value="data.id_comite" class="form-control">
+                                        <option ng-repeat="x in foreign.comite" value="[[x.id]]">[[x.descripcion]]</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="">Elección</label>
+                            <div class="form-group">
+                                <div>
+                                 
+                                    <select ng-model="data.id_eleccion" ng-value="data.id_eleccion" class="form-control" ng-options=" item as item.descripcion for item in foreign.eleccion track by item.id" ng-change="obtenerPeriodos(item)"></select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Período</label>
+                            <div class="form-group">
+                                <div>
+                                    <select ng-model="data.id_periodo" ng-value="data.id_periodo" class="form-control">
+                                        <option ng-repeat="x in periodo_filtrado" value="[[x.id]]">[[x.fecha]]</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="guardarCambios(tabla, data)" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

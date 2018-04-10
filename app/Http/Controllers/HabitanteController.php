@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Habitante;
-
+use App\Cargo;
 use Illuminate\Http\Request;
 
 
@@ -11,12 +11,17 @@ class HabitanteController extends Controller
 {
     public function index()
     {
-    	return Habitante::get();
+        $Habitante['data'] = Habitante::get();
+        for ($i=0; $i < count($Habitante['data']); $i++) { 
+            $Cargo = Cargo::find($Habitante['data'][$i]['cargo']);
+            $Habitante['data'][$i]['cargo_desc'] = $Cargo['descripcion'];
+        }    
+        $Habitante['foreign'] = array('cargo' => Cargo::get(),);
+    	return $Habitante;
     }
     public function show($id)
     {
     	return Habitante::find($id);
-        
     }
  	public function update(Request $request, $id) {
  		Habitante::find($id)->update($request->all());

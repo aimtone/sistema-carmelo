@@ -2,6 +2,30 @@ var app = angular.module('siccas', ['ngRoute', 'ngCookies', 'ngResource'], funct
     $interpolateProvider.startSymbol('[[');
     $interpolateProvider.endSymbol(']]');
 });
+app.directive('ngEnter', function() {
+    return function(scope, element, attrs) {
+        element.bind("keydown keypress", function(event) {
+            if (event.which === 13) {
+                scope.$apply(function() {
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
+app.directive('ngRightClick', function($parse) {
+    return function(scope, element, attrs) {
+        var fn = $parse(attrs.ngRightClick);
+        element.bind('contextmenu', function(event) {
+            scope.$apply(function() {
+                event.preventDefault();
+                fn(scope, { $event: event });
+            });
+        });
+    };
+});
 app.config(function($routeProvider) {
     $routeProvider
         .when('/', {
@@ -11,6 +35,26 @@ app.config(function($routeProvider) {
         .when('/habitante', {
             templateUrl: 'templates/habitante.html?ver=1.0',
             controller: 'Habitante'
+        })
+        .when('/comite', {
+            templateUrl: 'templates/comite.html?ver=1.0',
+            controller: 'Comite'
+        })
+        .when('/eleccion', {
+            templateUrl: 'templates/eleccion.html?ver=1.0',
+            controller: 'Eleccion'
+        })
+        .when('/cargo', {
+            templateUrl: 'templates/cargo.html?ver=1.0',
+            controller: 'Cargo'
+        })
+        .when('/candidato', {
+            templateUrl: 'templates/candidato.html?ver=1.0',
+            controller: 'Candidato'
+        })
+        .when('/periodo', {
+            templateUrl: 'templates/periodo.html?ver=1.0',
+            controller: 'Periodo'
         })
         .otherwise({
             redirectTo: '/'
@@ -31,8 +75,10 @@ app.factory("auth", function($cookies, $cookieStore, $location, $rootScope) {
     }
 });
 
-app.run(function($rootScope, auth) {
+app.run(function($rootScope, auth, $cookieStore) {
     $rootScope.$on('$routeChangeStart', function() {
+        $rootScope.current_user = $cookieStore.get('current_user');
+        console.log($rootScope.current_user);
         auth.checkStatus();
         auth.valid();
     })
@@ -105,116 +151,161 @@ app.controller('MainController', function($rootScope, $scope, $http, $location, 
         return promise;
     };
 
-    $rootScope.data_login = {
-        email: null,
-        password: null
+    $rootScope.openModal = function(accion, data) {
+        $('#basicModal').modal('toggle');
+
+        if (typeof data === "undefined") {
+            // agregera
+            $rootScope.data = {};
+            $rootScope.agregar = true;
+        } else {
+            // modificar
+            $rootScope.data = data;
+            $rootScope.agregar = false;
+        }
     };
 
-    $rootScope.login = function() {
-        console.log($rootScope.data_login);
-        $http.post('http://localhost:8080/api/login', $rootScope.data_login).then(function(response) {
-            console.log(response);
-            if (typeof response.data.token != "undefined" && response.data.token != null) {
-                $cookieStore.put('token', response.data.token);
-                window.location.href = "inicio.html";
+    $rootScope.closeModal = function() {
+        $('#basicModal').modal('toggle');
+        $rootScope.data = {};
+        $rootScope.agregar = true;
+    };
+
+
+    $rootScope.seleccionarTodos = function(tabla) {
+        $rootScope.get(tabla, $cookieStore.get('token')).then(function(response) {
+            if (response.status == 200) {
+                $rootScope.datas = response.data.data;
+                $rootScope.foreign = response.data.foreign;
+
+                console.log($rootScope.foreign);
+            } else {
+                $rootScope.datas = null;
             }
         }, function(error) {
             console.error(error);
         });
+    };
 
+    $rootScope.guardarCambios = function(tabla, data) {
+        console.log($rootScope.agregar);
+        if ($rootScope.agregar) {
+            $rootScope.post(tabla, data, $cookieStore.get('token')).then(function(response) {
+                if (response.status == 200) {
+                    $rootScope.seleccionarTodos(tabla);
+                    $rootScope.closeModal();
+                }
+            }, function(error) {
+                console.error(error);
+            });
+        } else {
+            $rootScope.put(tabla + '/' + data.id, data, $cookieStore.get('token')).then(function(response) {
+                if (response.status == 200) {
+                    $rootScope.seleccionarTodos(tabla);
+                    $rootScope.closeModal();
+                }
+            }, function(error) {
+                console.error(error);
+            });
+        }
+    };
 
+    $rootScope.eliminar = function(tabla, id) {
+        swal({
+                title: "¿Estás seguro de que deseas suprimir este registro?",
+                text: "Una vez eliminado, no podrás ver mas el registro en la tabla",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                confirmButtonText: "Cancelar",
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $rootScope.delete(tabla + '/' + id, $cookieStore.get('token')).then(function(response) {
+                        if (response.status == 200) {
+                            $rootScope.seleccionarTodos(tabla);
+                        } else {
+                            swal("Ocurrio un error y el registro no fue eliminado", {
+                                icon: "success",
+                            });
+                        }
+                    }, function(error) {
+                        console.error(error);
+                        swal("Ocurrio un error y el registro no fue eliminado", {
+                            icon: "success",
+                        });
+                    });
+                } else {
+                    swal("Ocurrio un error y el registro no fue eliminado", {
+                        icon: "success",
+                    });
+                }
+            });
     }
+
+
 });
 
 app.controller('Inicio', function($rootScope, $scope, $http, $location, $window, $q, $cookieStore, auth) {
 
 });
-
 app.controller('Candidato', function($rootScope, $scope, $http, $location, $window, $q, $cookieStore, auth) {
-    $rootScope.get('candidato', $cookieStore.get('token')).then(function(response) {
-        // aqui va entrar cuadndo te de una respuesta
-        if (response.status == 200) {
-            $scope.candidatos = response.data;
-        } else {
-            $rootScope.candidatos = null;
+    $scope.tabla = 'candidato';
+    $rootScope.seleccionarTodos($scope.tabla);
+
+    $scope.obtenerPeriodos = function() {
+        $rootScope.periodo_filtrado = [];
+        $rootScope.data.id_eleccion = $rootScope.data.id_eleccion.id;
+        var contador = 0;
+        for (var i = 0; i < $rootScope.foreign.periodo.length; i++){
+          if ($rootScope.foreign.periodo[i].id == $rootScope.data.id_eleccion){
+            $rootScope.periodo_filtrado[contador] = $rootScope.foreign.periodo[i];
+            contador++;
+          }
         }
-    }, function(error) {
-        console.error(error);
-    });
+    };
+
+     $scope.buscarHabitantePorCedula = function() {
+        $rootScope.data.cedula = $rootScope.data.cedula.split("-");
+        var encontrado = false;
+        for (var i = 0; i < $rootScope.foreign.habitante.length; i++){
+          if ($rootScope.foreign.habitante[i].nacionalidad == $rootScope.data.cedula[0] && $rootScope.foreign.habitante[i].cedula == $rootScope.data.cedula[1] ){
+            $rootScope.data.id_habitante = $rootScope.foreign.habitante[i].id;
+            $scope.nombres = $rootScope.foreign.habitante[i].nombre;
+            $scope.apellidos = $rootScope.foreign.habitante[i].apellido;
+            $rootScope.data.cedula = $rootScope.data.cedula.join("-");
+            encontrado = true;
+            break;
+          } 
+        }
+
+        if(!encontrado) {
+            $rootScope.data.cedula = $rootScope.data.cedula.join("-");
+            $rootScope.data.id_habitante = null;
+            $scope.nombres = null;
+            $scope.apellidos = null;
+        }
+    };
 });
-
-
 app.controller('Habitante', function($rootScope, $scope, $http, $location, $window, $q, $cookieStore, auth) {
+    $scope.tabla = 'habitante';
+    $rootScope.seleccionarTodos($scope.tabla);
+});
+app.controller('Comite', function($rootScope, $scope, $http, $location, $window, $q, $cookieStore, auth) {
+    $scope.tabla = 'comite';
+    $rootScope.seleccionarTodos($scope.tabla);
+});
+app.controller('Eleccion', function($rootScope, $scope, $http, $location, $window, $q, $cookieStore, auth) {
+    $scope.tabla = 'eleccion';
+    $rootScope.seleccionarTodos($scope.tabla);
+});
+app.controller('Cargo', function($rootScope, $scope, $http, $location, $window, $q, $cookieStore, auth) {
+    $scope.tabla = 'cargo';
+    $rootScope.seleccionarTodos($scope.tabla);
 
-    $scope.seleccionarTodos = function() {
-        $rootScope.get('habitante', $cookieStore.get('token')).then(function(response) {
-            if (response.status == 200) {
-                $scope.habitantes = response.data;
-            } else {
-                $scope.habitantes = null;
-            }
+});
+app.controller('Periodo', function($rootScope, $scope, $http, $location, $window, $q, $cookieStore, auth) {
+    $scope.tabla = 'periodo';
+    $rootScope.seleccionarTodos($scope.tabla);
 
-        }, function(error) {
-            console.error(error);
-        });
-    };
-
-    $scope.seleccionarTodos();
-
-
-    $scope.habitante = null;
-    $scope.accion = "agregar";
-    $scope.agregar = function() {
-        $rootScope.post('habitante', $scope.habitante, $cookieStore.get('token')).then(function(response) {
-            if(response.status==200) {
-                $scope.mensaje = "agregado correctamente";
-                $scope.seleccionarTodos();
-                $scope.habitante = null;
-
-            } else {
-                $scope.mensaje = "No se ha agregado";
-            }
-        }, function(error) {
-            console.error(error);
-        });
-    };
-
-    $scope.seleccionar = function(habitante) {
-        $scope.mensaje = "";
-        $scope.habitante = habitante;
-        $scope.accion = "editar";
-    };
-    $scope.editar = function() {
-        $rootScope.put('habitante/' + $scope.habitante.id, $scope.habitante, $cookieStore.get('token')).then(function(response) {
-            if (response.status == 200) {
-                $scope.habitante = response.data;
-                $scope.mensaje = "Modificado";
-            } else {
-                $scope.mensaje = "No Modificado";
-            }
-
-        }, function(error) {
-            console.error(error);
-            $scope.mensaje = "Ha ocurrido un error";
-        });
-    };
-
-    $scope.eliminar = function() {
-
-
-        if (confirm("Desea eliminar")) {
-            $rootScope.delete('habitante/' + $scope.habitante.id, $cookieStore.get('token')).then(function(response) {
-                if (response.status == 200) {
-                    $scope.habitante = null;
-                    $scope.seleccionarTodos();
-                } else {
-                    $scope.mensaje = "No eliminado";
-                }
-            }, function(error) {
-                console.error(error);
-                $scope.mensaje = "Ha ocurrido un error";
-            });
-        }
-
-    }
 });
