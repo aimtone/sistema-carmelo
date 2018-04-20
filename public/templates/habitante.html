@@ -8,7 +8,7 @@
                 <input type="text" class="form-control" placeholder="" ng-model="search">
                 <span class="input-group-btn">
                       <button class="btn btn-default" type="button">Buscar</button>
-                    </span>
+                </span>
             </div>
         </div>
     </div>
@@ -26,35 +26,32 @@
                     <th>Cédula</th>
                     <th>Nombres</th>
                     <th>Apellidos</th>
-                    <th>Casa</th>
-                    <th>Calle</th>
-                    <th>Vereda</th>
-                    <th>Sector</th>
                     <th>Fecha de nacimiento</th>
                     <th>Teléfono celular</th>
                     <th>Teléfono habitación</th>
-                    <th>Cargo</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-show="datas.length==0 || datas == null" class="text-center ">
                     <td colspan="11">No existen datos registrados</td>
                 </tr>
-                <tr ng-click="openModal('editar', x);" ng-show="datas.length!=0" ng-repeat="x in datas | filter:search">
+                <tr ng-click="openModal('editar', x);" ng-show="datas.length!=0" ng-repeat="x in datas | filter:search | limitTo: limit:begin">
                     <td>[[x.nacionalidad]]-[[x.cedula]]</td>
                     <td>[[x.nombre]]</td>
                     <td>[[x.apellido]]</td>
-                    <td>[[x.casa]]</td>
-                    <td>[[x.calle]]</td>
-                    <td>[[x.vereda]]</td>
-                    <td>[[x.sector]]</td>
                     <td>[[x.fecha_de_nacimiento]]</td>
                     <td>[[x.telefono_celular]]</td>
                     <td>[[x.telefono_habitacion]]</td>
-                    <td>[[x.cargo_desc]]</td>
                 </tr>
             </tbody>
         </table>
+
+        <ul class="pagination pull-right">
+            <li ng-show="current_page>=6"><span>...</span></li>
+            <li ng-click="cambiarPagina(num)" ng-repeat="num in numPages"><a href="javascript:void">[[num]]</a></li>
+            <li ng-show="current_page + 5 <= cantPages"><span>...</span></li>
+        </ul>
+
     </div>
 </div>
 <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
@@ -142,7 +139,7 @@
                             <label for="">Fecha de Nacimiento</label>
                             <div class="form-group">
                                 <div>
-                                    <input type="text" ng-model="data.fecha_de_nacimiento" class="form-control">
+                                    <input type="text" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" ng-model="data.fecha_de_nacimiento" class="form-control datepicker">
                                 </div>
                             </div>
                         </div>
@@ -162,14 +159,6 @@
                                 <div>
                                     <input type="text" ng-model="data.telefono_habitacion" class="form-control">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <label for="">Cargo</label>
-                            <div class="form-group">
-                                <select ng-model="data.cargo" ng-value="data.cargo" class="form-control">
-                                    <option ng-repeat="x in foreign.cargo" value="[[x.id]]">[[x.descripcion]]</option>
-                                </select>
                             </div>
                         </div>
                     </div>

@@ -21,6 +21,12 @@ Route::middleware('auth:api')->resource('eleccion','EleccionController');
 Route::middleware('auth:api')->resource('cargo','CargoController');
 Route::middleware('auth:api')->resource('periodo','PeriodoController');
 Route::middleware('auth:api')->resource('comite','ComiteController');
+Route::middleware('auth:api')->resource('voto','VotoController');
+Route::middleware('auth:api')->resource('activacion','ActivacionController');
+Route::middleware('auth:api')->resource('participacion','ParticipacionController');
+
+Route::get('boletin/{guid}','BoletinController@index');
+Route::get('resultados/{id}','BoletinController@resultados');
 
 Route::middleware('auth:api')->resource('user','UserController');
 Route::post('/login', 'API\UserController@login');

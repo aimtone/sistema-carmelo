@@ -12,11 +12,7 @@ class HabitanteController extends Controller
     public function index()
     {
         $Habitante['data'] = Habitante::get();
-        for ($i=0; $i < count($Habitante['data']); $i++) { 
-            $Cargo = Cargo::find($Habitante['data'][$i]['cargo']);
-            $Habitante['data'][$i]['cargo_desc'] = $Cargo['descripcion'];
-        }    
-        $Habitante['foreign'] = array('cargo' => Cargo::get(),);
+        $Habitante['foreign'] = array();
     	return $Habitante;
     }
     public function show($id)

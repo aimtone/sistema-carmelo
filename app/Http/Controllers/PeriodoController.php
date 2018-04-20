@@ -44,6 +44,7 @@ class PeriodoController extends Controller
     	return $obj;
     }
     public function store(Request $request)  {
+        $request["guid"] = str_random(32);
     	return Periodo::create($request->all());
     }
 }

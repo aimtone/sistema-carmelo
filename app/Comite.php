@@ -13,7 +13,7 @@ class Comite extends Model
      * @var array
      */
     protected $fillable = [
-        'descripcion'
+        'descripcion', 'cupos', 'id_eleccion', 'seleccionable'
     ];
 
 }

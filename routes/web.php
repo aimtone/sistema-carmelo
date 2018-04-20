@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/app', function() {
-	return view('index');
+	return view('inicio');
 });
 Route::get('/register', function() {
 	return view('register');
@@ -26,4 +26,14 @@ Route::get('/reset-password', function() {
 Route::get('/reset', function() {
 	return view('reset');
 });
+
+
+Route::get('/boletin/{id}', function($id) {
+	return view('boletin')->with('id', $id);
+});
+Route::get('/proceso/{id}', function($id) {
+	return view('proceso')->with('id', $id);
+});
+
+
 

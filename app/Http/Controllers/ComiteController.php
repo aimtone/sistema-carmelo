@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Comite;
-
+use App\Eleccion;
 use Illuminate\Http\Request;
 
 
@@ -12,7 +12,11 @@ class ComiteController extends Controller
     public function index()
     {
         $Comite['data'] = Comite::get();
-        $Comite['foreign'] = array();
+        for ($i=0; $i < count($Comite['data']); $i++) { 
+            $Eleccion = Eleccion::find($Comite['data'][$i]['id_eleccion']);
+            $Comite['data'][$i]['eleccion'] = $Eleccion['descripcion'];
+        } 
+        $Comite['foreign'] = array('eleccion' => Eleccion::get());
         return $Comite;
     }
     public function show($id)

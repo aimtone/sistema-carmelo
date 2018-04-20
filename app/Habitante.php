@@ -13,7 +13,7 @@ class Habitante extends Model
      * @var array
      */
     protected $fillable = [
-        'cedula', 'nombre', 'apellido', 'casa', 'calle', 'vereda', 'sector', 'fecha_de_nacimiento', 'telefono_celular', 'telefono_habitacion', 'cargo', 'status'
+        'cedula', 'nombre', 'apellido', 'casa', 'calle', 'vereda', 'sector', 'fecha_de_nacimiento', 'telefono_celular', 'telefono_habitacion', 'status'
     ];
 
 }

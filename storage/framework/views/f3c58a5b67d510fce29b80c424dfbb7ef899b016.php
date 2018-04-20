@@ -38,7 +38,7 @@
                 <input type="password" ng-model="data_login.password" class="form-control" placeholder="Contraseña" required="" />
               </div>
               <div>
-                <button type="submit" class="btn btn-default submit" href="index.html">Log in</button>
+                <button type="submit" class="btn btn-default submit" href="index.html">Ingresar</button>
               </div>
 
               <div class="clearfix"></div>
@@ -79,7 +79,7 @@
                 if (typeof response.data.token != "undefined" && response.data.token != null) {
                     $cookieStore.put('token', response.data.token);
                     $cookieStore.put('current_user', response.data);
-                    window.location.href = "inicio.html";
+                    window.location.href = "app";
                 }
             }, function(error) {
                 console.error(error);

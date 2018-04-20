@@ -13,7 +13,7 @@ class Periodo extends Model
      * @var array
      */
     protected $fillable = [
-        'fecha', 'id_eleccion'
+        'fecha', 'id_eleccion', 'guid', 'activo', 'realizado'
     ];
 
 }

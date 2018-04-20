@@ -24,17 +24,28 @@
             <thead>
                 <tr>
                     <th>Descripción</th>
+                    <th>Cupos</th>
+                    <th>Elegibles</th>
+                    <th>Elección</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-show="datas.length==0 || datas == null" class="text-center ">
                     <td colspan="11">No existen datos registrados</td>
                 </tr>
-                <tr ng-click="openModal('editar', x);" ng-show="datas.length!=0" ng-repeat="x in datas | filter:search">
+                <tr ng-click="openModal('editar', x);" ng-show="datas.length!=0" ng-repeat="x in datas | filter:search | limitTo: limit:begin">
                     <td>[[x.descripcion]]</td>
+                    <td>[[x.cupos]]</td>
+                    <td>[[x.seleccionable]]</td>
+                    <td>[[x.eleccion]]</td>
                 </tr>
             </tbody>
         </table>
+        <ul class="pagination pull-right">
+            <li ng-show="current_page>=6"><span>...</span></li>
+            <li ng-click="cambiarPagina(num)" ng-repeat="num in numPages"><a href="javascript:void">[[num]]</a></li>
+            <li ng-show="current_page + 5 <= cantPages"><span>...</span></li>
+        </ul>
     </div>
 </div>
 <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
@@ -53,6 +64,30 @@
                                 <div>
                                     <input type="text" ng-model="data.descripcion" class="form-control">
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Cupos</label>
+                                <div>
+                                    <input type="text" ng-model="data.cupos" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Elegible</label>
+                                <div>
+                                    <input type="text" ng-model="data.seleccionable" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <label for="">Eleccion</label>
+                            <div class="form-group">
+                                <select ng-model="data.id_eleccion" ng-value="data.id_eleccion" class="form-control">
+                                    <option ng-repeat="x in foreign.eleccion" value="[[x.id]]">[[x.descripcion]]</option>
+                                </select>
                             </div>
                         </div>
                     </div>
